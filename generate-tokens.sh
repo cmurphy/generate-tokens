@@ -6,8 +6,9 @@ then
 fi
 
 usage() {
-    echo "./generate-tokens.sh users.csv"
+    echo "./generate-tokens.sh users.csv [--print]"
     echo "CSV file must be in format userid,authprovider"
+    echo "By default, result is applied with kubectl to current cluster context. Use --print to print only or pipe to another command."
 }
 
 user_list=$1
@@ -17,6 +18,8 @@ then
     usage
     exit 1
 fi
+
+print_only=$2
 
 tokens=''
 
@@ -44,6 +47,11 @@ description: Temporary login token to fix Rancher bug"
 
 done < $user_list
 
-echo "$tokens" | kubectl apply -f -
+if [ "$print_only" == "" ]
+then
+    echo "$tokens" | kubectl apply -f -
+else
+    echo "$tokens"
+fi
 
-echo "To delete tokens, run 'kubectl delete token -l cattle.io/bugfix=true'"
+>&2 echo "To delete tokens, run 'kubectl delete token -l cattle.io/bugfix=true'"
