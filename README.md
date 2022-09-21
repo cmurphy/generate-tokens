@@ -21,6 +21,20 @@ u-efghi23456,keycloak
 
 To get a list of auth provider tags, run `kubectl get authconfigs`.
 
+Running the script on the CSV file will apply the token resources using kubectl
+to the cluster in the current context:
+
+```
+./generate-tokens.sh users.csv
+```
+
+Optionally, run with `--print` to run as a no-op and see the results before
+applying, or pipe to another command:
+
+```
+./generate-tokens.sh users.csv --print | kubectl apply -f -
+```
+
 After running the script, log in to Rancher and navigate to "Users &
 Authentication" -> Users. Using the checkboxes on the left side of the screen,
 select every affected user and click "Refresh Group Memberships".
